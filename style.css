@@ -1,0 +1,96 @@
+body {
+    background-color: grey;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  .game-wrapper {
+    position: relative;
+    background: black;
+    width: 1024px;
+    height: 868px;
+    /* margin: 0 auto; */
+  }
+  
+  .scoreboard {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1024px;
+    height: 68px;
+    background-color: red;
+    display: inline-flex;
+  }
+  h2 {
+    margin-left: 40px;
+    color: white;
+  }
+  
+  .game-area {
+    position: absolute;
+    top: 170px;
+    left: 112px;
+    width: 800px;
+    height: 600px;
+    background-color: white;
+  }
+  
+  .brick-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 800px;
+    height: 400px;
+    display: grid;
+    /* margin-left: 2px; */
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 5px; 
+    /* margin: 10px 5px; */
+  }
+
+  .brick{
+    background-color: rgb(134, 72, 72); 
+    height: 35px;
+    width: 75px;
+}
+  
+  .paddle {
+    position: absolute;
+    bottom: 10px;
+    left: 350px;
+    width: 100px;
+    height: 30px;
+    background-color: red;
+    border-radius: 5px;
+  }
+  
+  .ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: black;
+    border-radius: 50%;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    font-size: 48px;
+    color: white;
+    text-shadow: 1px 1px 1px black;
+    background: rgb(0, 0, 0, 0.8);
+    height: 200px;
+    width: 400px;
+    text-align: center;
+    border-radius: 10px;
+    font-weight:bold;
+    display: block;
+  }
+  
