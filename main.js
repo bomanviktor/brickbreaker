@@ -1,52 +1,11 @@
+import { resetBricks, drawBricks, bricks} from "./levelEditor.js";
+
+drawBricks();
 const brickWidth = 75;
 const brickHeight = 35;
 
-
-const levels = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-  ];
-
-const brickArea = document.querySelector(".brick-area");
-
-let bricks = [];
-
-function drawBricks() {
-    for (let i = 0; i < levels.length; i++) {
-        for (let j = 0; j < levels[i].length; j++) {
-            if (levels[i][j] === 1) {
-                let brick = document.createElement("div");
-                brick.classList.add("brick");
-                brick.style.gridColumn = j + 1;
-                brick.style.gridRow = i + 1;
-                brickArea.appendChild(brick);
-                bricks.push(brick);
-                // bricks[i][j] = brick;
-            }
-        }
-    }
-}
-drawBricks();
-
-function resetBricks() {
-  for (let i = 0; i < bricks.length; i++) {
-    brickArea.removeChild(bricks[i]);
-  }
-  bricks = [];
-}
-
-
-
 // GAME DEFINITION CONSTANTS.
-const gameWidth = 800; 
+const gameWidth = 799; 
 const gameHeight = 600;
 const paddleWidth = 100;
 const paddleHeight = 30;
@@ -63,7 +22,7 @@ let shiftPressed = false;
 // BALL MOVEMENT SETTINGS 
 let ballX = paddleX + paddleWidth / 2;
 let ballY = gameHeight - paddleHeight - 35;
-let ballSpeed = 3;
+let ballSpeed = 5;
 let ballDirection = { x: 0, y: -1 };
 
 // GAME STARTED/PAUSED/GAMEOVER
@@ -78,6 +37,8 @@ let player = {
     time: 0,
     lives: 3
 }
+
+let brickAmount = 30;
 
 // MOVES THE PADDLE
 function movePaddle() {
@@ -110,7 +71,7 @@ function resetGame(){
   paused = false;
   resetBricks();
   drawBricks();
-  document.querySelector(".overlay").textContent = "Press space to start";
+  document.getElementById("overlay-text").textContent = "Press space";
   document.getElementById("timer").textContent = "TIME: 0";
 }
 
@@ -132,6 +93,7 @@ function keyDownHandler(event) {
             gameStarted = true;
             startTimer();
             document.querySelector(".overlay").style.display = "none";
+            ballDirection.y = -1;
             ballDirection.x = Math.random()/2 - 0.5;
         }
         break;
@@ -209,8 +171,12 @@ function checkCollision() {
     if (ballTop <= 0){
         ballDirection.y *= -1; 
     }
-    if (ballLeft <= 0 || ballRight >= gameWidth){
+    if (ballLeft <= 0){
+        ballX = 1;
         ballDirection.x *= -1;
+    } else if (ballRight >= gameWidth){
+      ballX = gameWidth - 21;
+      ballDirection.x *= -1;
     }
 
     // Checks if ball hits bottom. Player then loses a life. If life == 0, game over screen.
@@ -220,9 +186,9 @@ function checkCollision() {
         ballY = gameHeight - paddleHeight - 35;
         gameStarted = false;
         if(player.lives <= 0){
-          document.querySelector(".overlay").textContent = "GAME OVER! Press r to restart.";
+          let gameOver = "Game over! <br> Press 'R' to restart"
+          document.getElementById("overlay-text").innerHTML = gameOver;
           document.querySelector(".overlay").style.display = "block";
-          // drawBricks();
           gameOver = true;
           clearInterval(timerId);
         } else {
@@ -230,23 +196,18 @@ function checkCollision() {
         }
         return;
     }
-  
+    let xDir = -1;
+    let division = 2 / (paddleWidth);
     // Check if the edges of the ball and the paddle overlap
     if (
       ballRight >= paddleLeft &&
       ballLeft <= paddleRight &&
-      ballBottom >= paddleTop &&
-      ballTop <= paddleBottom - 20
+      ballBottom >= paddleTop  &&
+      ballTop <= paddleBottom
     ) {
-        if(rightKeyPressed && ballDirection.x <= 1){
-            ballDirection.x <= 0.5 ? ballDirection.x += 0.1 : ballDirection.x += 0.2;
-            ballDirection.y += -1;
-        } else if(leftKeyPressed && ballDirection.x >= -1){
-            ballDirection.x <= -0.5 ? ballDirection.x += -0.1 : ballDirection.x += -0.2;
-            ballDirection.y = -1;
-        } else {
-            ballDirection.y = -1;
-        }
+      xDir += division * (ballX - paddleX)
+      ballDirection.x = xDir;
+      ballDirection.y = -1;
       // If there is a collision, change direction of ball.
     }
 
@@ -259,31 +220,52 @@ function checkCollision() {
     const brickTop = brick.offsetTop;
     const brickBottom = brick.offsetTop + brick.offsetHeight;
 
+    // signals a hit with a brick xD
     if (
-        ballRight >= brickLeft &&
-        ballLeft <= brickRight &&
-        ballBottom <= brickBottom &&
-        ballTop >= brickTop
+      ballRight >= brickLeft &&
+      ballLeft <= brickRight &&
+      ballBottom >= brickTop &&
+      ballTop <= brickBottom
     ) {
-      console.log(bricks);
-        brick.remove();
-        bricks.splice(i, 1);
-        ballDirection.x *= -1;
-        player.points += 10;
-    } else if (
-        ballRight >= brickLeft &&
-        ballLeft <= brickRight &&
-        ballBottom >= brickTop &&
-        ballTop <= brickBottom
+      if (
+        ballLeft <= brickLeft - 16 || 
+        ballRight >= brickRight + 16
       ) {
-        console.log(bricks);
-        brick.remove();
-        bricks.splice(i, 1);
+        ballDirection.x *= -1;
+      } else {
         ballDirection.y *= -1;
-        player.points += 10;
       }
+      brickAmount--;
+      brick.remove();
+      bricks.splice(i, 1);
+      player.points += 10;
+      ballSpeed += 0.03;
+      break;
+    }
 
-
+    // if (
+    //     ballRight >= brickLeft &&
+    //     ballLeft <= brickRight &&
+    //     ballBottom <= brickBottom &&
+    //     ballTop >= brickBottom
+    // ) {
+    //     brick.remove();
+    //     bricks.splice(i, 1);
+    //     ballDirection.x *= -1;
+    //     player.points += 10;
+    //     break;
+    // } else if (
+    //     ballRight >= brickLeft &&
+    //     ballLeft <= brickRight &&
+    //     ballBottom >= brickTop &&
+    //     ballTop <= brickBottom
+    //   ) {
+    //     brick.remove();
+    //     bricks.splice(i, 1);
+    //     ballDirection.y *= -1;
+    //     player.points += 10;
+    //     break;
+    //   }
   }
 }
 
@@ -308,7 +290,7 @@ function startTimer() {
     // Stop the timer
     clearInterval(timerId);
     // rest of your code...
-    document.querySelector(".overlay").textContent = "Press space to start";
+    document.getElementById("overlay-text").textContent = "Press space to start";
     document.querySelector(".overlay").style.display = "block";
   }
 
@@ -316,7 +298,7 @@ function pauseGame(){
     if (!paused && !gameOver){
         clearInterval(timerId);
         paused = true;
-        document.querySelector(".overlay").textContent = "Paused \n Press 'r' to restart";
+        document.getElementById("overlay-text").textContent = "Press 'R' to restart";
         document.querySelector(".overlay").style.display = "block";
     } else {
         paused = false;
@@ -324,6 +306,20 @@ function pauseGame(){
         startTimer();
     }
 }
+
+function checkForWin(){
+  if (brickAmount <= 0){
+    clearInterval(timerId);
+    const winGame = `You win! Score: ${player.points} Press r to play again.`;
+    document.getElementById("overlay-text").style.fontSize = "24px";
+    document.getElementById("overlay-text").textContent = winGame;
+    document.querySelector(".overlay").style.display = "block";
+    gameOver = true;
+    gameStarted = false;
+    clearInterval(timerId);
+  }
+}
+
 
 window.addEventListener("keydown", keyDownHandler);
 window.addEventListener("keyup", keyUpHandler);
@@ -336,10 +332,9 @@ function gameLoop() {
         updateBallPosition();
         drawBall();
         updateScoreboard();
+        checkForWin();
     }
     requestAnimationFrame(gameLoop);
 }
-
-
 gameLoop();
 
