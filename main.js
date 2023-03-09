@@ -128,7 +128,7 @@ function keyDownHandler(event) {
       shiftPressed = true;
       break;
     case " ":
-        if(!gameStarted){
+        if(!gameStarted && !gameOver){
             gameStarted = true;
             startTimer();
             document.querySelector(".overlay").style.display = "none";
