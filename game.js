@@ -69,7 +69,7 @@ function movePaddle() {
 function resetGame() {
   Object.assign(player, { points: 0, lives: 3, level: 1, time: 0 });
   [ballX, ballY] = [(paddleX + paddleWidth / 2) - 10, gameHeight - paddleHeight - 35];
-  [gameStarted, paused, gameOver, brickAmount] = [false, false, false, 10];
+  [gameStarted, paused, gameOver, brickAmount] = [false, false, false, levels[player.level-1].totalBricks];
   resetBricks();
   drawBricks(player.level - 1);
   overlayText.textContent = "Press space";
@@ -288,7 +288,6 @@ function checkForWin(){
       initiateLevel();
     }
     gameStarted = false;
-    gameOver = true;
   }
 }
 

@@ -23,6 +23,7 @@ export let levels = [
   {
     text: "<p>Things are getting harder...<br><br>\
     Press space to continue...</p>",
+    totalBricks: 23,
     bricks: [
       [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
       [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "],
