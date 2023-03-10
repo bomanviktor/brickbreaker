@@ -4,8 +4,69 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
+    margin: 0px;
   }
+
+  p{
+    font-size: 24px;
+  }
+
+  button {
+    background-color: black;
+    color: white;
+    border: none;
+    font-weight: bold;
+    width: 200px;
+    height: 60px;
+    margin: 10px;
+    font-size: 24px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 8px;
+  }
+
+.menu{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  margin-left: 400px;
+  margin-bottom: 250px;
+  height: 100vh;
+  color: white;
+}
+
+
+
+.instructions{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+}
+
+
+.leaderboard{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+}
+
+.credit{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+}
+  
   
   .game-wrapper {
     position: relative;
@@ -22,7 +83,8 @@ body {
     width: 1024px;
     height: 68px;
     background-color: red;
-    display: inline-flex;
+    /* display: inline-flex; */
+    display: none;
   }
   h2 {
     margin-left: 40px;
@@ -33,11 +95,15 @@ body {
     position: absolute;
     top: 170px;
     left: 112px;
-    width: 799px;
+    width: 800px;
     height: 600px;
-    background-color: white;
+    background-color: rgb(40, 13, 13);
+    display: none;
   }
   
+
+  
+  /* BRICKS STYLE AND PROPERTIES */
   .brick-area {
     position: absolute;
     top: 0;
@@ -53,10 +119,24 @@ body {
   }
 
   .brick{
-    background-color: rgb(134, 72, 72); 
+    background-color: rgb(255, 255, 255); 
     height: 35px;
     width: 75px;
 }
+
+  .steel-brick {
+    background-color: rgb(113, 107, 107); 
+    height: 35px;
+    width: 75px;
+  }
+
+  .powerup-brick {
+    background-color: blue;
+    height: 35px;
+    width: 75px;
+  }
+
+
   
   .paddle {
     position: absolute;
@@ -72,7 +152,7 @@ body {
     position: absolute;
     width: 20px;
     height: 20px;
-    background-color: black;
+    background-color: rgb(255, 255, 255);
     border-radius: 50%;
   }
   
@@ -82,7 +162,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
-    font-size: 30px;
+    /* font-size: 24px; */
     color: white;
     text-shadow: 1px 1px 1px black;
     background: rgb(0, 0, 0, 0.8);
@@ -94,10 +174,4 @@ body {
     font-weight:bold; 
     display: block;
   }
-
-  #overlay-text {
-    /* top: 50%;
-    left: 50%; */
-  }
-
 

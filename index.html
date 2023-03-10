@@ -8,9 +8,39 @@
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
 </head>
 <body>
+
+
+
     <div class="game-wrapper">
+
+        <div class="menu">
+            <h1>Brick-Breaker</h1>
+            <button id="start-button">Start Game</button>
+            <button id="instructions">Instructions</button>
+            <button id="start-button">Leaderboard</button>
+            <button id="start-button">Credit</button>
+        </div>
+
+        <div class="instructions">
+            <h1>Instructions:</h1>
+            <p><- and -> to move.</p>
+            <p>Shift for speed boost.</p>
+            <p>Clear all breakable bricks to win.</p>
+            <button id="return">Return</button>
+        </div>
+
+        <div class="leaderboard">
+            <h1>Leaderboard:</h1>
+            <button id="return">Return</button>
+        </div>
+
+        <div class="credit">
+            <h1>Credit</h1>
+            <p>Viktor, Antoni & Sagar 2023</p>
+            <button id="return">Return</button>
+        </div>
         
-        <!-- Your scoreboard here -->
+        <!-- scoreboard here -->
         <div class="scoreboard">
             <h2 id="level"></h2>
             <h2 id="lives"></h2>
@@ -22,7 +52,7 @@
             <div class="overlay">
                 <p id="overlay-text">Space to start</p>
             </div>
-            <!-- Your game board here -->
+            <!-- game board here -->
           <div class="brick-area">
         </div>
         <div class="paddle"></div>
