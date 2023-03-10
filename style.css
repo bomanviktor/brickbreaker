@@ -52,14 +52,15 @@ body {
   align-items: center;
   position: absolute;
   margin-left: 400px;
-  margin-bottom: 250px;
-  height: 100vh;
+  margin-top: 200px;
+  height: 400px;
   color: white;
 }
 
 .menu button.selected {
   background-color: white;
   color: black;
+  width: 220px;
 }
 
 .instructions{

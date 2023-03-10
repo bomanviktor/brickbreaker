@@ -41,7 +41,6 @@ let player = {
   time: 0,
   lives: 3
 }
-drawBricks(player.level);
 
 let brickAmount = 10;
 
@@ -85,6 +84,7 @@ function resetGame(){
 
 // HANDLES ALL KEYDOWN PRESSES. ENABLES RESTART LEVEL IF GAME IS PAUSED.
 function keyDownHandler(event) {
+  console.log(event);
   switch (event.key) {
     case "ArrowLeft":
       leftKeyPressed = true;
@@ -309,10 +309,10 @@ function checkForWin(){
 }
 
 
-window.addEventListener("keydown", keyDownHandler);
-window.addEventListener("keyup", keyUpHandler);
+
 
 function gameLoop() {
+  console.log("ok");
     if(!paused){
         checkCollision();
         movePaddle();
@@ -327,6 +327,10 @@ function gameLoop() {
 
 export function initiateGame(){
   drawBricks(player.level);
+  ballX = (paddleX + paddleWidth / 2) - 10;
+  ballY = gameHeight - paddleHeight - 35;
   gameLoop();
 }
 
+window.addEventListener("keydown", keyDownHandler);
+window.addEventListener("keyup", keyUpHandler);

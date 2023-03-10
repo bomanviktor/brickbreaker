@@ -12,7 +12,7 @@ let outsideMain = false;
 
 // This variable is for selectMenuItem & handleKeyDown to move through items
 let selectedItemIndex = 0;
-function selectMenuItem(index) {
+function selectMenuItem(index = 0) {
   // Remove the 'selected' class from all menu items
   menuItems.forEach(item => item.classList.remove('selected'));
   
@@ -64,6 +64,7 @@ function startGameHandler(){
     mainMenu.style.display = "none";
     document.querySelector(".scoreboard").style.display = "flex";
     document.querySelector(".game-area").style.display = "grid";
+    document.dispatchEvent(new Event('startGame'));
     outsideMain = true;
     outsideMenu = true;
 }

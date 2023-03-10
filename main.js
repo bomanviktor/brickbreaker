@@ -1,4 +1,3 @@
-// In main.js:
 import { initiateGame } from "./game.js";
 import { handleKeyDown } from "./menu.js"
 
