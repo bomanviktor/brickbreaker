@@ -3,15 +3,16 @@ const mainMenu = document.querySelector('.menu');
 const instructions = document.querySelector('.instructions');
 const leaderboard = document.querySelector('.leaderboard');
 const credit = document.querySelector('.credit');
-const returnButton = document.getElementById('return');
 
 
 
-export let startGame = false;
-let selectedItemIndex = 0;
+export let outsideMenu = false;
 let outsideMain = false;
 
-export function selectMenuItem(index) {
+
+// This variable is for selectMenuItem & handleKeyDown to move through items
+let selectedItemIndex = 0;
+function selectMenuItem(index) {
   // Remove the 'selected' class from all menu items
   menuItems.forEach(item => item.classList.remove('selected'));
   
@@ -23,21 +24,15 @@ export function selectMenuItem(index) {
 }
 
 export function handleKeyDown(event) {
-  switch (event.code) {
+  switch (event.key) {
     case 'ArrowUp':
       if (selectedItemIndex > 0) {
         selectMenuItem(selectedItemIndex - 1);
-      }
-      if (selectedItemIndex === 0){
-        selectMenuItem(-1);
       }
       break;
     case 'ArrowDown':
       if (selectedItemIndex < menuItems.length - 1) {
         selectMenuItem(selectedItemIndex + 1);
-      }
-      if (selectedItemIndex === menuItems.length - 1) {
-        selectMenuItem(0)
       }
       break;
     case 'Enter':
@@ -47,7 +42,8 @@ export function handleKeyDown(event) {
         }
         switch(selectedItemIndex){
             case 0:
-                startGame();
+                console.log("game start!");
+                startGameHandler();
                 break;
             case 1:
                 instructionsHandler();
@@ -63,11 +59,13 @@ export function handleKeyDown(event) {
         break;
   }
 }
-function startGame(){
+
+function startGameHandler(){
     mainMenu.style.display = "none";
-    document.querySelector
+    document.querySelector(".scoreboard").style.display = "flex";
+    document.querySelector(".game-area").style.display = "grid";
     outsideMain = true;
-    startGame = true;
+    outsideMenu = true;
 }
 
 function instructionsHandler(){
