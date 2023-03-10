@@ -51,7 +51,8 @@ function movePaddle() {
   paddleSpeed = shiftPressed ? 8 : 4;
   paddleX += (rightKeyPressed - leftKeyPressed) * paddleSpeed;
   paddleX = Math.min(Math.max(paddleX, 0), gameWidth - paddleWidth);
-  drawPaddle();
+  paddle.style.left = paddleX + "px";
+  // drawPaddle();
 }
 
 function resetGame() {
@@ -126,27 +127,18 @@ function keyUpHandler(event) {
   }
 }
 
-// DRAWS THE PADDLE
-function drawPaddle() {
-  paddle.style.left = paddleX + "px";
-}
-
-// DRAWS THE BALL
-function drawBall() {
-  ball.style.left = ballX + "px";
-  ball.style.top = ballY + "px";
+// UPDATES BALL POSITION
+function moveBall() {
   if (!gameStarted) {
     ballX = (paddleX + paddleWidth / 2) - 10;
     ballY = gameHeight - paddleHeight - 35;
   }
-}
-
-// UPDATES BALL POSITION
-function updateBallPosition() {
   if (gameStarted) {
     ballX += ballDirection.x * ballSpeed;
     ballY += ballDirection.y * ballSpeed;
   }
+  ball.style.left = ballX + "px";
+  ball.style.top = ballY + "px";
 }
 
 // CHECKS FOR COLLISION. ADJUST TO TASTE.
@@ -240,7 +232,7 @@ function startTimer() {
 function stopGame() {
   // Stop the timer
   clearInterval(timerId);
-  // rest of your code...
+  
   overlayText.textContent = "Press space to start";
   overlay.style.display = "block";
 }
@@ -275,13 +267,11 @@ function checkForWin() {
   }
 }
 
-function gameLoop() {c
+function gameLoop() {
   if (!paused) {
     checkCollision();
     movePaddle();
-    drawPaddle();
-    updateBallPosition();
-    drawBall();
+    moveBall();
     updateScoreboard();
     checkForWin();
   }
