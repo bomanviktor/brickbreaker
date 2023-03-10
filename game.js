@@ -1,11 +1,11 @@
-import { resetBricks, drawBricks, bricks} from "./levelEditor.js";
+import { resetBricks, drawBricks, bricks } from "./levelEditor.js";
 
 
 const brickWidth = 75;
 const brickHeight = 35;
 
 // GAME DEFINITION CONSTANTS
-const gameWidth = 800; 
+const gameWidth = 800;
 const gameHeight = 600;
 const paddleWidth = 100;
 const paddleHeight = 30;
@@ -46,35 +46,16 @@ let brickAmount = 10;
 
 // MOVES THE PADDLE
 function movePaddle() {
-  if(shiftPressed){
-    paddleSpeed = 8;
-  } else {
-    paddleSpeed = 4;
-  }
-  if (leftKeyPressed && !rightKeyPressed) {
-    paddleX -= paddleSpeed;
-  } else if (rightKeyPressed && !leftKeyPressed) {
-    paddleX += paddleSpeed;
-  }
-  if (paddleX < 0) {
-    paddleX = 0;
-  } else if (paddleX > gameWidth - paddleWidth) {
-    paddleX = gameWidth - paddleWidth;
-  }
+  paddleSpeed = shiftPressed ? 8 : 4;
+  paddleX += (rightKeyPressed - leftKeyPressed) * paddleSpeed;
+  paddleX = Math.min(Math.max(paddleX, 0), gameWidth - paddleWidth);
   drawPaddle();
 }
 
-function resetGame(){
-  player.points = 0;
-  player.lives = 3;
-  player.level = 1;
-  player.time = 0;
-  ballX = (paddleX + paddleWidth / 2) - 10;
-  ballY = gameHeight - paddleHeight - 35;
-  gameStarted = false;
-  paused = false;
-  gameOver = false;
-  brickAmount = 10;
+function resetGame() {
+  Object.assign(player, { points: 0, lives: 3, level: 1, time: 0 });
+  [ballX, ballY] = [(paddleX + paddleWidth / 2) - 10, gameHeight - paddleHeight - 35];
+  [gameStarted, paused, gameOver, brickAmount] = [false, false, false, 10];
   resetBricks();
   drawBricks(player.level);
   overlayText.textContent = "Press space";
@@ -96,24 +77,24 @@ function keyDownHandler(event) {
       shiftPressed = true;
       break;
     case " ":
-        if(!gameStarted){
-            gameStarted = true;
-            startTimer();
-            overlay.style.display = "none";
-            ballDirection.y = -1;
-            ballDirection.x = Math.random()/2 - 0.5;
-        }
-        break;
+      if (!gameStarted) {
+        gameStarted = true;
+        startTimer();
+        overlay.style.display = "none";
+        ballDirection.y = -1;
+        ballDirection.x = Math.random() / 2 - 0.5;
+      }
+      break;
     case "p":
-        if(gameStarted){
-            pauseGame();
-        }
-        break;
+      if (gameStarted) {
+        pauseGame();
+      }
+      break;
     case "r":
-      if(gameStarted && paused){
+      if (gameStarted && paused) {
         resetGame();
       }
-      if (gameOver){
+      if (gameOver) {
         resetGame();
       }
       break;
@@ -162,87 +143,34 @@ function updateBallPosition() {
 
 // CHECKS FOR COLLISION. ADJUST TO TASTE.
 function checkCollision() {
-    // Calculate the coordinates of the edges of the ball and the paddle
-    const ballLeft = ballX;                       // Literally ball left position
-    const ballRight = ballX + ball.offsetWidth;   // and right position
-    const ballTop = ballY;                        // and top position
-    const ballBottom = ballY + ball.offsetHeight; // and bottom position
+  const ballLeft = ballX, ballRight = ballX + ball.offsetWidth, ballTop = ballY, ballBottom = ballY + ball.offsetHeight;
+  const paddleLeft = paddleX, paddleRight = paddleX + paddle.offsetWidth, paddleTop = gameHeight - paddle.offsetHeight - 10, paddleBottom = gameHeight;
 
-    // same as above.
-    const paddleLeft = paddleX;
-    const paddleRight = paddleX + paddle.offsetWidth;
-    const paddleTop = gameHeight - paddle.offsetHeight - 10;
-    const paddleBottom = gameHeight;
+  if (ballTop <= 0) ballDirection.y *= -1;
+  if (ballLeft <= 0) ballX = 1, ballDirection.x *= -1;
+  if (ballRight >= gameWidth) ballX = gameWidth - 21, ballDirection.x *= -1;
+  if (ballBottom >= gameHeight) {
+    player.lives--;
+    ballX = (paddleX + paddleWidth / 2) - 10;
+    ballY = gameHeight - paddleHeight - 35;
+    gameStarted = false;
+    if (player.lives <= 0) {
+      overlayText.textContent = "Game over! Press 'R' to restart";
+      overlay.style.display = "block";
+      gameOver = true;
+      clearInterval(timerId);
+    } else {
+      stopGame();
+    }
+    return;
+  }
 
-    // Checks if ball hits walls.
-    if (ballTop <= 0){
-        ballDirection.y *= -1; 
-    }
-    if (ballLeft <= 0){
-        ballX = 1;
-        ballDirection.x *= -1;
-    }
-    if (ballRight >= gameWidth){
-      ballX = gameWidth - 21;
-      ballDirection.x *= -1;
-    }
-
-    // Checks if ball hits bottom. Player then loses a life. If life == 0, game over screen.
-    if (ballBottom >= gameHeight){
-        player.lives--;
-        ballX = (paddleX + paddleWidth / 2) - 10;
-        ballY = gameHeight - paddleHeight - 35;
-        gameStarted = false;
-        if(player.lives <= 0){
-          overlayText.textContent = "Game over! Press 'R' to restart";
-          overlay.style.display = "block";
-          gameOver = true;
-          clearInterval(timerId);
-        }
-        if(player.lives >= 1){
-          stopGame();
-        }
-        return;
-    }
-    let xDir = -1;
-    let division = 2 / (paddleWidth);
-    // Check if the edges of the ball and the paddle overlap
-    if (
-      ballRight >= paddleLeft &&
-      ballLeft <= paddleRight &&
-      ballBottom >= paddleTop  &&
-      ballTop <= paddleBottom
-    ) {
-      xDir += division * (ballX - paddleX)
-      ballDirection.x = xDir;
-      ballDirection.y = -1;
-      // If there is a collision, change direction of ball.
-    }
-
-
-  // Loop through each brick and check for collision
+  let xDir = -1, division = 2 / paddleWidth;
   for (let i = 0; i < bricks.length; i++) {
-    const brick = bricks[i];
-    const brickLeft = brick.offsetLeft;
-    const brickRight = brick.offsetLeft + brick.offsetWidth;
-    const brickTop = brick.offsetTop;
-    const brickBottom = brick.offsetTop + brick.offsetHeight;
-
-    // signals a hit with a brick xD
-    if (
-      ballRight >= brickLeft &&
-      ballLeft <= brickRight &&
-      ballBottom >= brickTop &&
-      ballTop <= brickBottom
-    ) {
-      if (
-        ballLeft <= brickLeft - 16 || 
-        ballRight >= brickRight + 16
-      ) {
-        ballDirection.x *= -1;
-      } else {
-        ballDirection.y *= -1;
-      }
+    const brick = bricks[i], brickLeft = brick.offsetLeft, brickRight = brickLeft + brick.offsetWidth, brickTop = brick.offsetTop, brickBottom = brickTop + brick.offsetHeight;
+    if (ballRight >= brickLeft && ballLeft <= brickRight && ballBottom >= brickTop && ballTop <= brickBottom) {
+      ballDirection.x *= (ballLeft <= brickLeft - 16 || ballRight >= brickRight + 16) ? -1 : 1;
+      ballDirection.y *= (ballLeft <= brickLeft - 16 || ballRight >= brickRight + 16) ? 1 : -1;
       brickAmount--;
       brick.remove();
       bricks.splice(i, 1);
@@ -251,59 +179,64 @@ function checkCollision() {
       break;
     }
   }
+
+  if (ballRight >= paddleLeft && ballLeft <= paddleRight && ballBottom >= paddleTop && ballTop <= paddleBottom) {
+    ballDirection.x = xDir + division * (ballX - paddleX);
+    ballDirection.y = -1;
+  }
 }
 
-function updateScoreboard(){
-    document.getElementById("level").innerText = "LEVEL: " + player.level;
-    document.getElementById("lives").innerText = "LIVES: " + player.lives;
-    document.getElementById("score").innerText = "SCORE: " + player.points;
+function updateScoreboard() {
+  document.getElementById("level").innerText = "LEVEL: " + player.level;
+  document.getElementById("lives").innerText = "LIVES: " + player.lives;
+  document.getElementById("score").innerText = "SCORE: " + player.points;
 }
 
 
 // Update the timer every second
 let timerId;
 function startTimer() {
-    timerId = setInterval(function() {
-      player.time++;
-      document.getElementById("timer").textContent = "TIME: " + player.time;
-    }, 1000);
-  }
-  
-  function stopGame() {
-    // Stop the timer
-    clearInterval(timerId);
-    // rest of your code...
-    overlayText.textContent = "Press space to start";
-    overlay.style.display = "block";
-  }
-
-function pauseGame(){
-    if (!paused && !gameOver){
-        clearInterval(timerId);
-        paused = true;
-        overlayText.textContent = "Press 'R' to restart";
-        overlay.style.display = "block";
-    } else {
-        paused = false;
-        overlay.style.display = "none";
-        startTimer();
-    }
+  timerId = setInterval(function () {
+    player.time++;
+    document.getElementById("timer").textContent = "TIME: " + player.time;
+  }, 1000);
 }
 
-function checkForWin(){
-  if (brickAmount <= 0){
+function stopGame() {
+  // Stop the timer
+  clearInterval(timerId);
+  // rest of your code...
+  overlayText.textContent = "Press space to start";
+  overlay.style.display = "block";
+}
+
+function pauseGame() {
+  if (!paused && !gameOver) {
     clearInterval(timerId);
-    if(player.level == 5){
+    paused = true;
+    overlayText.textContent = "Press 'R' to restart";
+    overlay.style.display = "block";
+  } else {
+    paused = false;
+    overlay.style.display = "none";
+    startTimer();
+  }
+}
+
+function checkForWin() {
+  if (brickAmount <= 0) {
+    clearInterval(timerId);
+    if (player.level == 5) {
       overlayText.textContent = `You win! Score: ${player.points} Press "r" to play again.`;
       overlay.style.display = "block";
     } else {
       overlayText.textContent = `Level completed. Press space to continue.`;
-     overlay.style.display = "block";
+      overlay.style.display = "block";
       player.level++;
     }
     gameStarted = false;
     gameOver = true;
- 
+
 
   }
 }
@@ -313,19 +246,19 @@ function checkForWin(){
 
 function gameLoop() {
   console.log("ok");
-    if(!paused){
-        checkCollision();
-        movePaddle();
-        drawPaddle();
-        updateBallPosition();
-        drawBall();
-        updateScoreboard();
-        checkForWin();
-    }
-    requestAnimationFrame(gameLoop);
+  if (!paused) {
+    checkCollision();
+    movePaddle();
+    drawPaddle();
+    updateBallPosition();
+    drawBall();
+    updateScoreboard();
+    checkForWin();
+  }
+  requestAnimationFrame(gameLoop);
 }
 
-export function initiateGame(){
+export function initiateGame() {
   drawBricks(player.level);
   ballX = (paddleX + paddleWidth / 2) - 10;
   ballY = gameHeight - paddleHeight - 35;
