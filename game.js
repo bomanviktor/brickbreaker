@@ -1,4 +1,4 @@
-import { resetBricks, drawBricks, bricks} from "./levelEditor.js";
+import { resetBricks, drawBricks, bricksArray, levels} from "./levelEditor.js";
 
 
 const brickWidth = 75;
@@ -11,6 +11,7 @@ const paddleWidth = 100;
 const paddleHeight = 30;
 const paddle = document.querySelector(".paddle");
 const ball = document.querySelector(".ball");
+const levelText = document.querySelector(".level-text");
 
 // PADDLE CONTROLS
 let paddleSpeed = 4;
@@ -25,10 +26,11 @@ let ballY = gameHeight - paddleHeight - 35;
 let ballSpeed = 3;
 let ballDirection = { x: 0, y: -1 };
 
-// GAME STARTED/PAUSED/GAMEOVER
+// GAME STARTED/PAUSED/GAMEOVER/INSIDE STORY TEXT
 let gameStarted = false;
 let paused = false;
 let gameOver = false;
+let insideStory;
 
 // OVERLAY VARIABLES
 const overlay = document.querySelector(".overlay");
@@ -42,7 +44,7 @@ let player = {
   lives: 3
 }
 
-let brickAmount = 10;
+let brickAmount;
 
 // MOVES THE PADDLE
 function movePaddle() {
@@ -74,9 +76,9 @@ function resetGame(){
   gameStarted = false;
   paused = false;
   gameOver = false;
-  brickAmount = 10;
+  brickAmount = levels[player.level-1].totalBricks;
   resetBricks();
-  drawBricks(player.level);
+  drawBricks(player.level - 1);
   overlayText.textContent = "Press space";
   document.getElementById("timer").textContent = "TIME: 0";
 }
@@ -84,7 +86,6 @@ function resetGame(){
 
 // HANDLES ALL KEYDOWN PRESSES. ENABLES RESTART LEVEL IF GAME IS PAUSED.
 function keyDownHandler(event) {
-  console.log(event);
   switch (event.key) {
     case "ArrowLeft":
       leftKeyPressed = true;
@@ -96,26 +97,35 @@ function keyDownHandler(event) {
       shiftPressed = true;
       break;
     case " ":
-        if(!gameStarted){
+        if(!gameStarted && !insideStory){
             gameStarted = true;
             startTimer();
             overlay.style.display = "none";
             ballDirection.y = -1;
             ballDirection.x = Math.random()/2 - 0.5;
         }
+        if(insideStory){
+          insideStory = false;
+          levelText.style.display = "none";
+          overlay.style.display = "block";
+
+        }
         break;
     case "p":
-        if(gameStarted){
+        if(gameStarted && !insideStory){
             pauseGame();
         }
         break;
     case "r":
-      if(gameStarted && paused){
+      if(gameStarted && paused && !insideStory){
         resetGame();
       }
       if (gameOver){
         resetGame();
       }
+      break;
+    case "t":
+      console.log(brickAmount);
       break;
   }
 }
@@ -221,8 +231,8 @@ function checkCollision() {
 
 
   // Loop through each brick and check for collision
-  for (let i = 0; i < bricks.length; i++) {
-    const brick = bricks[i];
+  for (let i = 0; i < bricksArray.length; i++) {
+    const brick = bricksArray[i];
     const brickLeft = brick.offsetLeft;
     const brickRight = brick.offsetLeft + brick.offsetWidth;
     const brickTop = brick.offsetTop;
@@ -245,7 +255,7 @@ function checkCollision() {
       }
       brickAmount--;
       brick.remove();
-      bricks.splice(i, 1);
+      bricksArray.splice(i, 1);
       player.points += 10;
       ballSpeed += 0.03;
       break;
@@ -293,18 +303,17 @@ function pauseGame(){
 function checkForWin(){
   if (brickAmount <= 0){
     clearInterval(timerId);
-    if(player.level == 5){
+    if(player.level > 3){
       overlayText.textContent = `You win! Score: ${player.points} Press "r" to play again.`;
       overlay.style.display = "block";
-    } else {
+    } 
+    if(player.level <= 3) {
       overlayText.textContent = `Level completed. Press space to continue.`;
      overlay.style.display = "block";
       player.level++;
     }
     gameStarted = false;
     gameOver = true;
- 
-
   }
 }
 
@@ -312,7 +321,6 @@ function checkForWin(){
 
 
 function gameLoop() {
-  console.log("ok");
     if(!paused){
         checkCollision();
         movePaddle();
@@ -325,8 +333,22 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-export function initiateGame(){
-  drawBricks(player.level);
+export function initiateLevel(){
+  insideStory = true;
+  const currentLevel = player.level - 1; // array is 0-indexed
+
+  // display level text
+  levelText.innerHTML = levels[currentLevel].text;
+  levelText.style.display = "flex";
+
+  // draw bricks for current level
+  resetBricks();
+  drawBricks(currentLevel);
+
+  // set bricks needed to pass the level
+  brickAmount = levels[currentLevel].totalBricks;
+
+  // set initial ball position and start game loop
   ballX = (paddleX + paddleWidth / 2) - 10;
   ballY = gameHeight - paddleHeight - 35;
   gameLoop();
