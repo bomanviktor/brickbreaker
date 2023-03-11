@@ -1,10 +1,14 @@
+import { resetGame, insideStory } from "./game.js";
+import { menuNavigation, menuSelection } from "./audio.js";
+
+// MENU QUERYSELECTORS
 const menuItems = document.querySelectorAll('.menu button');
 const mainMenu = document.querySelector('.menu');
-const instructions = document.querySelector('.instructions');
-const leaderboard = document.querySelector('.leaderboard');
-const credit = document.querySelector('.credit');
-
-
+const instructions = document.getElementById('instructions-menu');
+const leaderboard = document.getElementById('leaderboard-menu');
+const credit = document.getElementById('credit-menu');
+const finishGame = document.getElementById('finish-game');
+const loseGame = document.getElementById('lose-game');
 
 export let outsideMenu = false;
 let outsideMain = false;
@@ -26,16 +30,19 @@ function selectMenuItem(index = 0) {
 export function handleKeyDown(event) {
   switch (event.key) {
     case 'ArrowUp':
+      menuNavigation.play();
       if (selectedItemIndex > 0) {
         selectMenuItem(selectedItemIndex - 1);
       }
       break;
     case 'ArrowDown':
+      menuNavigation.play();
       if (selectedItemIndex < menuItems.length - 1) {
         selectMenuItem(selectedItemIndex + 1);
       }
       break;
     case 'Enter':
+        if(!outsideMenu) menuSelection.play();
         if(outsideMain){
             returnToMain();
             break;
@@ -61,12 +68,15 @@ export function handleKeyDown(event) {
 }
 
 function startGameHandler(){
-    mainMenu.style.display = "none";
-    document.querySelector(".scoreboard").style.display = "flex";
-    document.querySelector(".game-area").style.display = "grid";
-    document.dispatchEvent(new Event('startGame'));
-    outsideMain = true;
-    outsideMenu = true;
+    if(!outsideMenu){
+      mainMenu.style.display = "none";
+      document.querySelector(".scoreboard").style.display = "flex";
+      document.querySelector(".game-area").style.display = "grid";
+      resetGame();
+      document.dispatchEvent(new Event('startGame'));
+      outsideMain = true;
+      outsideMenu = true;
+    }
 }
 
 function instructionsHandler(){
@@ -87,14 +97,15 @@ function creditHandler(){
     outsideMain = true;
 }
 
+
 function returnToMain(){
     mainMenu.style.display = "flex";
     instructions.style.display = "none";
     leaderboard.style.display = "none";
     credit.style.display = "none";
+    loseGame.style.display = "none";
+    finishGame.style.display = "none";
     outsideMain = false;
 }
-
-
 
 document.addEventListener('keydown', handleKeyDown);

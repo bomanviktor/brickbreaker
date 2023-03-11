@@ -9,10 +9,6 @@ body {
     overflow: hidden;
   }
 
-  p{
-    font-size: 24px;
-  }
-
   button {
     background-color: black;
     color: white;
@@ -27,11 +23,35 @@ body {
     border-radius: 8px;
   }
 
+
+  p{
+    font-size: 24px;
+  }
+
+  label {
+    font-size: 30px;
+    margin-left: 30%;
+  }
+
+  input {
+    width: 200px;
+    height: 2rem;
+    font-size: 24px;
+    border-width: 2px;
+    border-color: white;
+    background-color: black;
+    border-style: solid;
+    border-radius: 5px;
+    color: white;
+    margin: 5px;
+    margin-top: 10px;
+    text-align: center;
+  }
+
   h2 {
     margin-left: 40px;
     color: white;
   }
-
 
 /* CONTAINER FOR THE GAME AND MENU */
   .game-wrapper {
@@ -39,10 +59,8 @@ body {
     background: black;
     width: 1024px;
     height: 868px;
-    cursor: none;
     /* margin: 0 auto; */
   }
-
 
   /* MENU STYLES */
 .menu{
@@ -63,7 +81,7 @@ body {
   width: 220px;
 }
 
-.instructions{
+.menu-option{
   display: none;
   flex-direction: column;
   justify-content: center;
@@ -72,23 +90,11 @@ body {
   color: white;
 }
 
-.leaderboard{
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  color: white;
-}
-
-.credit{
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  color: white;
-}
+.menu-option #instructions-menu{display: none;}
+.menu-option #leaderboard-menu{display: none;}
+.menu-option #credit-menu{display: none;}
+.menu-option #lose-game{display: none;}
+.menu-option #finish-game{display: none;}
 
 .level-text {
   position: absolute;
