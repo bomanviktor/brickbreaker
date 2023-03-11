@@ -51,11 +51,11 @@ let brickMap = {
 };
 
 export function drawBricks(levelIndex) {
-  const level = levels[levelIndex]
+  const level = levels[levelIndex];
   const bricks = level.bricks;
   for (let i = 0; i < bricks.length; i++) {
     for (let j = 0; j < bricks[i].length; j++) {
-      if (bricks[i][j] === " ") continue;
+      if (!brickMap.hasOwnProperty(bricks[i][j])) continue;
       let brick = document.createElement("div");
       brick.classList.add(brickMap[bricks[i][j]]);
       brick.style.gridColumn = j + 1;
