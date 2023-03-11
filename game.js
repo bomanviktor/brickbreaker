@@ -153,7 +153,7 @@ function checkCollision() {
     player.lives--;
     [ballX, ballY] = [(paddleX + paddleWidth / 2) - 10, gameHeight - paddleHeight - brickHeight];
     gameStarted = false;
-    if (player.lives <= 0) loseGame(); 
+    if (player.lives <= 0) finishGame('');
     if (player.lives > 0) loseLife.play(); stopGame();
     return;
   }
@@ -205,8 +205,6 @@ function checkCollision() {
   }
 }
 
-
-
 function stopGame() {
   clearInterval(timerId);
   overlayText.textContent = "Press space to start";
@@ -231,7 +229,7 @@ function checkForWin() {
   if (brickAmount <= 0) {
     clearInterval(timerId);
     if (player.level == 3) {
-      finishGame();
+      finishGame('Win');
     }
     if (player.level < 3) {
       player.level++;
@@ -253,23 +251,11 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-function finishGame(){
+function finishGame(win) {
   document.querySelector(".scoreboard").style.display = "none";
   document.querySelector(".game-area").style.display = "none";
-  document.getElementById("finish-game").style.display = "flex";
-  window.onload = function() {
-    document.getElementById('playerName').focus();
-  };
-  outsideMenu = false;
-}
-
-function loseGame(){
-  document.querySelector(".scoreboard").style.display = "none";
-  document.querySelector(".game-area").style.display = "none";
-  document.getElementById("lose-game").style.display = "flex";
-  window.onload = function() {
-    document.getElementById('playerName').focus();
-  };
+  win ? document.getElementById("finish-game").style.display = "flex" : document.getElementById("lose-game").style.display = "flex";
+  document.getElementById('playerName').focus();
   outsideMenu = false;
 }
 
