@@ -13,16 +13,15 @@ const loseGame = document.getElementById('lose-game');
 export let outsideMenu = false;
 let outsideMain = false;
 
-
 // This variable is for selectMenuItem & handleKeyDown to move through items
 let selectedItemIndex = 0;
 function selectMenuItem(index = 0) {
   // Remove the 'selected' class from all menu items
   menuItems.forEach(item => item.classList.remove('selected'));
-  
+
   // Add the 'selected' class to the selected menu item
   menuItems[index].classList.add('selected');
-  
+
   // Update the selectedItemIndex variable
   selectedItemIndex = index;
 }
@@ -42,70 +41,70 @@ export function handleKeyDown(event) {
       }
       break;
     case 'Enter':
-        if(!outsideMenu) menuSelection.play();
-        if(outsideMain){
-            returnToMain();
-            break;
-        }
-        switch(selectedItemIndex){
-            case 0:
-                console.log("game start!");
-                startGameHandler();
-                break;
-            case 1:
-                instructionsHandler();
-                break;
-            case 2:
-                leaderboardHandler();
-                break;
-            case 3:
-                creditHandler();
-                break;
-
-        }
+      if (!outsideMenu) menuSelection.play();
+      if (outsideMain) {
+        returnToMain();
         break;
+      }
+      switch (selectedItemIndex) {
+        case 0:
+          console.log("game start!");
+          startGameHandler();
+          break;
+        case 1:
+          instructionsHandler();
+          break;
+        case 2:
+          leaderboardHandler();
+          break;
+        case 3:
+          creditHandler();
+          break;
+
+      }
+      break;
   }
 }
 
-function startGameHandler(){
-    if(!outsideMenu){
-      mainMenu.style.display = "none";
-      document.querySelector(".scoreboard").style.display = "flex";
-      document.querySelector(".game-area").style.display = "grid";
-      resetGame();
-      document.dispatchEvent(new Event('startGame'));
-      outsideMain = true;
-      outsideMenu = true;
-    }
-}
-
-function instructionsHandler(){
+function startGameHandler() {
+  if (!outsideMenu) {
     mainMenu.style.display = "none";
-    instructions.style.display = "flex";
+    document.querySelector(".scoreboard").style.display = "flex";
+    document.querySelector(".game-area").style.display = "grid";
+    resetGame();
+    document.dispatchEvent(new Event('startGame'));
     outsideMain = true;
+    outsideMenu = true;
+  }
 }
 
-function leaderboardHandler(){
-    mainMenu.style.display = "none";
-    leaderboard.style.display = "flex";
-    outsideMain = true;
+function instructionsHandler() {
+  mainMenu.style.display = "none";
+  instructions.style.display = "flex";
+  outsideMain = true;
 }
 
-function creditHandler(){
-    mainMenu.style.display = "none";
-    credit.style.display = "flex";
-    outsideMain = true;
+function leaderboardHandler() {
+  mainMenu.style.display = "none";
+  leaderboard.style.display = "flex";
+  outsideMain = true;
+}
+
+function creditHandler() {
+  mainMenu.style.display = "none";
+  credit.style.display = "flex";
+  outsideMain = true;
 }
 
 
-function returnToMain(){
-    mainMenu.style.display = "flex";
-    instructions.style.display = "none";
-    leaderboard.style.display = "none";
-    credit.style.display = "none";
-    loseGame.style.display = "none";
-    finishGame.style.display = "none";
-    outsideMain = false;
+function returnToMain() {
+  mainMenu.style.display = "flex";
+  instructions.style.display = "none";
+  leaderboard.style.display = "none";
+  credit.style.display = "none";
+  loseGame.style.display = "none";
+  finishGame.style.display = "none";
+  outsideMain = false;
 }
 
 document.addEventListener('keydown', handleKeyDown);
