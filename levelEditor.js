@@ -44,40 +44,27 @@ const brickArea = document.querySelector(".brick-area");
 
 export let bricksArray = [];
 
-export function drawBricks(levelIndex) {
-  console.log(levelIndex)
-    const level = levels[levelIndex]
-    const bricks = level.bricks;
-    for (let i = 0; i < bricks.length; i++) {
-        for (let j = 0; j < bricks[i].length; j++) {
-            let brick = document.createElement("div");
-            switch(bricks[i][j]){
-              case "B":
-                brick.classList.add("brick");
-                brick.style.gridColumn = j + 1;
-                brick.style.gridRow = i + 1;
-                brickArea.appendChild(brick);
-                bricksArray.push(brick);
-                break;
-              case "P":
-                brick.classList.add("powerup-brick");
-                brick.style.gridColumn = j + 1;
-                brick.style.gridRow = i + 1;
-                brickArea.appendChild(brick);
-                bricksArray.push(brick);
-                break;
-              case "S":
-                brick.classList.add("steel-brick");
-                brick.style.gridColumn = j + 1;
-                brick.style.gridRow = i + 1;
-                brickArea.appendChild(brick);
-                bricksArray.push(brick);
-                break;
-            }
-        }
-    }
-}
+let brickMap = {
+  B: "brick",
+  P: "powerup-brick",
+  S: "steel-brick"
+};
 
+export function drawBricks(levelIndex) {
+  const level = levels[levelIndex]
+  const bricks = level.bricks;
+  for (let i = 0; i < bricks.length; i++) {
+    for (let j = 0; j < bricks[i].length; j++) {
+      if (bricks[i][j] === " ") continue;
+      let brick = document.createElement("div");
+      brick.classList.add(brickMap[bricks[i][j]]);
+      brick.style.gridColumn = j + 1;
+      brick.style.gridRow = i + 1;
+      brickArea.appendChild(brick);
+      bricksArray.push(brick);
+    }
+  }
+}
 
 export function resetBricks() {
   for (let i = 0; i < bricksArray.length; i++) {

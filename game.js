@@ -1,10 +1,7 @@
 import { resetBricks, drawBricks, bricksArray, levels } from "./levelEditor.js";
 
-
-const brickWidth = 75;
-const brickHeight = 35;
-
 // GAME DEFINITION CONSTANTS
+const brickHeight = 35;
 const gameWidth = 800;
 const gameHeight = 600;
 const paddleWidth = 100;
@@ -22,7 +19,7 @@ let shiftPressed = false;
 
 // BALL MOVEMENT SETTINGS 
 let ballX = paddleX + paddleWidth / 2;
-let ballY = gameHeight - paddleHeight - 35;
+let ballY = gameHeight - paddleHeight - brickHeight;
 let ballSpeed = 3;
 let ballDirection = { x: 0, y: -1 };
 
@@ -30,7 +27,7 @@ let ballDirection = { x: 0, y: -1 };
 let gameStarted = false;
 let paused = false;
 let gameOver = false;
-let insideStory;
+let insideStory = false;
 let firstTime = true;
 // OVERLAY VARIABLES
 const overlay = document.querySelector(".overlay");
@@ -52,12 +49,11 @@ function movePaddle() {
   paddleX += (rightKeyPressed - leftKeyPressed) * paddleSpeed;
   paddleX = Math.min(Math.max(paddleX, 0), gameWidth - paddleWidth);
   paddle.style.left = paddleX + "px";
-  // drawPaddle();
 }
 
 function resetGame() {
   Object.assign(player, { points: 0, lives: 3, level: 1, time: 0 });
-  [ballX, ballY] = [(paddleX + paddleWidth / 2) - 10, gameHeight - paddleHeight - 35];
+  [ballX, ballY] = [(paddleX + paddleWidth / 2) - 10, gameHeight - paddleHeight - brickHeight];
   [gameStarted, paused, gameOver, brickAmount] = [false, false, false, levels[player.level - 1].totalBricks];
   resetBricks();
   drawBricks(player.level - 1);
@@ -90,7 +86,6 @@ function keyDownHandler(event) {
         insideStory = false;
         levelText.style.display = "none";
         overlay.style.display = "block";
-
       }
       break;
     case "p":
@@ -130,8 +125,7 @@ function keyUpHandler(event) {
 // UPDATES BALL POSITION
 function moveBall() {
   if (!gameStarted) {
-    ballX = (paddleX + paddleWidth / 2) - 10;
-    ballY = gameHeight - paddleHeight - 35;
+    [ballX, ballY] = [(paddleX + paddleWidth / 2) - 10, gameHeight - paddleHeight - brickHeight];
   }
   if (gameStarted) {
     ballX += ballDirection.x * ballSpeed;
@@ -153,8 +147,7 @@ function checkCollision() {
   if (ballRight >= gameWidth) ballX = gameWidth - 21, ballDirection.x *= -1;
   if (ballBottom >= gameHeight) {
     player.lives--;
-    ballX = (paddleX + paddleWidth / 2) - 10;
-    ballY = gameHeight - paddleHeight - 35;
+    [ballX, ballY] = [(paddleX + paddleWidth / 2) - 10, gameHeight - paddleHeight - brickHeight];
     gameStarted = false;
     if (player.lives <= 0) {
       overlayText.textContent = "Game over! Press 'R' to restart";
@@ -232,7 +225,7 @@ function startTimer() {
 function stopGame() {
   // Stop the timer
   clearInterval(timerId);
-  
+
   overlayText.textContent = "Press space to start";
   overlay.style.display = "block";
 }
@@ -295,8 +288,7 @@ export function initiateLevel() {
   brickAmount = levels[currentLevel].totalBricks;
 
   // set initial ball position and start game loop
-  ballX = (paddleX + paddleWidth / 2) - 10;
-  ballY = gameHeight - paddleHeight - 35;
+  [ballX, ballY] = [(paddleX + paddleWidth / 2) - 10, gameHeight - paddleHeight - brickHeight];
   if (firstTime) gameLoop();
 }
 
