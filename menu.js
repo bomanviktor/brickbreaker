@@ -87,7 +87,20 @@ function leaderboardHandler() {
   mainMenu.style.display = "none";
   leaderboard.style.display = "flex";
   outsideMain = true;
+
+  fetch("http://localhost:5502/api/leaderboard")
+    .then(response => response.json())
+    .then(data => {
+      const ledata = document.getElementById("ledata");
+      if (data.length === 0) {
+        ledata.innerHTML = "LedgerBoard is Empty.<br/> Play some games first";
+      } else {
+        ledata.innerHTML = JSON.stringify(data);
+      }
+    })
+    .catch(error => console.log(error));
 }
+
 
 function creditHandler() {
   mainMenu.style.display = "none";
