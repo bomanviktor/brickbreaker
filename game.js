@@ -41,7 +41,8 @@ export let player = {
   level: 1,
   points: 0,
   time: 0,
-  lives: 3
+  lives: 3,
+  win: false
 }
 
 let brickAmount;
@@ -248,8 +249,51 @@ function gameLoop() {
 function finishGame(win) {
   document.querySelector(".scoreboard").style.display = "none";
   document.querySelector(".game-area").style.display = "none";
-  win ? document.getElementById("finish-game").style.display = "flex" : document.getElementById("lose-game").style.display = "flex";
-  win ? document.getElementById('playerNameWin').focus() : document.getElementById('playerNameLose').focus();
+  if (win) {
+    player.win = true;
+    document.getElementById("finish-game").style.display = "flex";
+    document.getElementById('playerNameWin').focus();
+    document.getElementById("submit-win").addEventListener("click", submitScore);
+  } else {
+    document.getElementById("lose-game").style.display = "flex";
+    document.getElementById('playerNameLose').focus();
+    document.getElementById("submit-lose").addEventListener("click", submitScore);
+  }
+  stopGame();
+}
+
+function submitScore(event) {
+  event.preventDefault();
+  const playerName = event.target.form.elements[0].value;
+  player.name = playerName;
+  const playerData = {
+    name: playerName,
+    level: player.level,
+    points: player.points,
+    time: player.time,
+    lives: player.lives
+  };
+  console.log(JSON.stringify(playerData));
+  fetch('http://localhost:5502/api/data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(playerData)
+  })
+    .then(response => response.json())
+    .then(leaderboard => {
+      const leaderboardDiv = player.win ? document.getElementById("leaderboard-win") : document.getElementById("leaderboard-lose");
+      leaderboardDiv.innerHTML = "";
+      leaderboard.forEach(entry => {
+        const entryDiv = document.createElement("div");
+        entryDiv.classList.add("leaderboard-entry");
+        entryDiv.innerHTML = `<span class="rank">${entry.rank}</span><span class="name">${entry.name}</span><span class="score">${entry.score}</span><span class="time">${entry.time}</span>`;
+        leaderboardDiv.appendChild(entryDiv);
+      });
+    })
+    .catch(error => console.error('Error submitting player data:', error));
+  player.win = false;
 }
 
 export function initiateLevel() {

@@ -60,7 +60,6 @@ export function handleKeyDown(event) {
         case 3:
           creditHandler();
           break;
-
       }
       break;
   }

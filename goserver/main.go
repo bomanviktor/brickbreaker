@@ -31,15 +31,30 @@ var mu sync.Mutex
 
 func main() {
 	http.HandleFunc("/api/data", handleData)
+	http.HandleFunc("/api/leaderboard", handleLeaderboard)
 	fmt.Println("Server is running on port 5502 ... http://localhost:5502")
 	log.Fatal((http.ListenAndServe(":5502", nil)))
 }
 
 func handleData(w http.ResponseWriter, r *http.Request) {
+	// Add CORS headers for preflight request
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
+
+	// Add CORS headers for actual request
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
 	fmt.Println("Request received: ", r.Method, r.URL.Path, r.RemoteAddr, r.UserAgent(), r.Header.Get("Content-Type"))
 
 	decoder := json.NewDecoder(r.Body)
@@ -91,6 +106,39 @@ func handleData(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 
+func handleLeaderboard(w http.ResponseWriter, r *http.Request) {
+
+	// Add CORS headers for preflight request
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Add CORS headers for actual request
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/json")
+
+	mu.Lock()
+	defer mu.Unlock()
+
+	response, err := json.Marshal(leaderboard)
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(response)
+}
+
 func calculateRank(points int) int {
 	rank := 1
 	for _, player := range players {
@@ -103,6 +151,5 @@ func calculateRank(points int) int {
 
 func formatTime(seconds int) string {
 	duration := time.Duration(seconds) * time.Second
-	fmt.Println(duration)
 	return fmt.Sprintf("%02d:%02d", int(duration.Minutes()), int(duration.Seconds())%60)
 }
