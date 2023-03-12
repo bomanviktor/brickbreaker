@@ -10,8 +10,10 @@ const credit = document.getElementById('credit-menu');
 const finishGame = document.getElementById('finish-game');
 const loseGame = document.getElementById('lose-game');
 
-export let outsideMenu = false;
-let outsideMain = false;
+export const menuState = {
+  outsideMenu: false,
+  outsideMain: false,
+}
 
 // This variable is for selectMenuItem & handleKeyDown to move through items
 let selectedItemIndex = 0;
@@ -41,8 +43,8 @@ export function handleKeyDown(event) {
       }
       break;
     case 'Enter':
-      if (!outsideMenu) menuSelection.play();
-      if (outsideMain) {
+      if (!menuState.outsideMenu) menuSelection.play();
+      if (menuState.outsideMain) {
         returnToMain();
         break;
       }
@@ -66,27 +68,27 @@ export function handleKeyDown(event) {
 }
 
 function startGameHandler() {
-  if (!outsideMenu) {
+  if (!menuState.outsideMenu) {
     mainMenu.style.display = "none";
     document.querySelector(".scoreboard").style.display = "flex";
     document.querySelector(".game-area").style.display = "grid";
     resetGame();
     document.dispatchEvent(new Event('startGame'));
-    outsideMain = true;
-    outsideMenu = true;
+    menuState.outsideMain = true;
+    menuState.outsideMenu = true;
   }
 }
 
 function instructionsHandler() {
   mainMenu.style.display = "none";
   instructions.style.display = "flex";
-  outsideMain = true;
+  menuState.outsideMain = true;
 }
 
 function leaderboardHandler() {
   mainMenu.style.display = "none";
   leaderboard.style.display = "flex";
-  outsideMain = true;
+  menuState.outsideMain = true;
 
   fetch("http://localhost:5502/api/leaderboard")
     .then(response => response.json())
@@ -101,13 +103,11 @@ function leaderboardHandler() {
     .catch(error => console.log(error));
 }
 
-
 function creditHandler() {
   mainMenu.style.display = "none";
   credit.style.display = "flex";
-  outsideMain = true;
+  menuState.outsideMain = true;
 }
-
 
 function returnToMain() {
   mainMenu.style.display = "flex";
@@ -116,7 +116,7 @@ function returnToMain() {
   credit.style.display = "none";
   loseGame.style.display = "none";
   finishGame.style.display = "none";
-  outsideMain = false;
+  menuState.outsideMain = false;
 }
 
 document.addEventListener('keydown', handleKeyDown);

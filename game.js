@@ -1,6 +1,7 @@
 import { resetBricks, drawBricks, bricksArray, levels } from "./levelEditor.js";
 import { updateScoreboard, startTimer, timerId } from "./scoreboard.js";
 import { loseLife, brickHit, paddleHit } from "./audio.js";
+import { menuState } from "./menu.js";
 
 // GAME DEFINITION CONSTANTS
 const brickHeight = 35;
@@ -259,7 +260,7 @@ function finishGame(win) {
     document.getElementById('playerNameLose').focus();
     document.getElementById("submit-lose").addEventListener("click", submitScore);
   }
-  stopGame();
+  menuState.outsideMain = false;
 }
 
 function submitScore(event) {
