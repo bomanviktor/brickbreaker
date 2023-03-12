@@ -1,7 +1,6 @@
 import { resetBricks, drawBricks, bricksArray, levels } from "./levelEditor.js";
 import { updateScoreboard, startTimer, timerId } from "./scoreboard.js";
 import { loseLife, brickHit, paddleHit } from "./audio.js";
-import { outsideMenu } from "./menu.js";
 
 // GAME DEFINITION CONSTANTS
 const brickHeight = 35;
@@ -65,7 +64,6 @@ export function resetGame() {
   document.getElementById("timer").textContent = "TIME: 0";
 }
 
-
 // HANDLES ALL KEYDOWN PRESSES. ENABLES RESTART LEVEL IF GAME IS PAUSED.
 function keyDownHandler(event) {
   switch (event.key) {
@@ -93,17 +91,13 @@ function keyDownHandler(event) {
       }
       break;
     case "p":
-      if (gameStarted) {
-        pauseGame();
-      }
+      gameStarted && pauseGame();
       break;
     case "r":
       if (gameStarted && paused && !insideStory) {
         resetGame();
       }
-      if (gameOver) {
-        resetGame();
-      }
+      gameOver && resetGame();
       break;
     case "t":
       brickAmount = 0;
@@ -158,6 +152,7 @@ function checkCollision() {
     return;
   }
   let xDir = -1, division = 2 / paddleWidth;
+
   // Check if the edges of the ball and the paddle overlap
   if (
     ballRight >= paddleLeft &&
@@ -170,7 +165,6 @@ function checkCollision() {
     ballDirection.x = xDir;
     ballDirection.y = -1; // If there is a collision, change direction of ball.
   }
-
 
   // Loop through each brick and check for collision
   for (let i = 0; i < bricksArray.length; i++) {
@@ -255,8 +249,7 @@ function finishGame(win) {
   document.querySelector(".scoreboard").style.display = "none";
   document.querySelector(".game-area").style.display = "none";
   win ? document.getElementById("finish-game").style.display = "flex" : document.getElementById("lose-game").style.display = "flex";
-  document.getElementById('playerName').focus();
-  outsideMenu = false;
+  win ? document.getElementById('playerNameWin').focus() : document.getElementById('playerNameLose').focus();
 }
 
 export function initiateLevel() {

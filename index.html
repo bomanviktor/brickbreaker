@@ -5,17 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Brick Breaker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="./assets/images/favicon.ico">
-    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <link rel="shortcut icon" href="./assets/images/favicon.ico" />
+    <link rel="stylesheet" type="text/css" media="screen" href="./style.css" />
   </head>
   <body>
     <div class="game-wrapper">
       <div class="menu">
         <h1>Brick-Breaker</h1>
-        <button id="start-button" class="selected">Start Game</button>
-        <button id="instructions">Instructions</button>
-        <button id="leaderboard">Leaderboard</button>
-        <button id="credit">Credit</button>
+        <button type="button" id="start-button" class="selected">
+          Start Game
+        </button>
+        <button type="button" id="instructions">Instructions</button>
+        <button type="button" id="leaderboard">Leaderboard</button>
+        <button type="button" id="credit">Credit</button>
       </div>
 
       <div class="menu-option" id="instructions-menu">
@@ -23,38 +25,55 @@
         <p><- and -> to move.</p>
         <p>Shift for speed boost.</p>
         <p>Clear all breakable bricks to win.</p>
-        <button id="return">Return</button>
+        <button id="return-instructions">Return</button>
       </div>
 
       <div class="menu-option" id="leaderboard-menu">
         <h1>Leaderboard:</h1>
-        <button id="return">Return</button>
+        <button id="return-leaderboard">Return</button>
       </div>
 
       <div class="menu-option" id="credit-menu">
         <h1>Credit</h1>
         <p>Viktor, Antoni & Sagar 2023</p>
-        <button id="return">Return</button>
+        <button id="return-credit">Return</button>
       </div>
 
       <div class="menu-option" id="lose-game">
-        <h1>You lose!</h1><br>
-        <p id="lose-game-details">Sample text to test spacing.</p><br>
+        <h1>You lose!</h1>
+        <br />
+        <p id="lose-game-details">Sample text to test spacing.</p>
+        <br />
         <form>
-            <label for="playerName">Name:</label><br>
-            <input type="text" id="playerName" name="playerName" maxlength="10" autofocus autocomplete="off"><br>
-            <button type="submit" id="submit">Submit</button>
+          <label for="playerName">Name:</label><br />
+          <input
+            type="text"
+            id="playerNameLose"
+            name="playerName"
+            maxlength="10"
+            autofocus
+            autocomplete="off"
+          /><br />
+          <button type="submit" id="submit-lose">Submit</button>
         </form>
-          
-    </div>
-    
-    <div class="menu-option" id="finish-game">
-        <h1>You win!</h1><br>
-        <p id="finish-game-details">Sample text to test spacing.</p><br>
+      </div>
+
+      <div class="menu-option" id="finish-game">
+        <h1>You win!</h1>
+        <br />
+        <p id="finish-game-details">Sample text to test spacing.</p>
+        <br />
         <form>
-            <label for="playerName">Name:</label><br>
-            <input type="text" id="playerName" name="playerName" maxlength="10" autofocus autocomplete="off"><br>
-            <button type="submit" id="submit">Submit</button>
+          <label for="playerName">Name:</label><br />
+          <input
+            type="text"
+            id="playerNameWin"
+            name="playerName"
+            maxlength="10"
+            autofocus
+            autocomplete="off"
+          /><br />
+          <button type="submit" id="submit-win">Submit</button>
         </form>
       </div>
 
@@ -81,13 +100,33 @@
     <script src="main.js" type="module"></script>
 
     <!-- MENU SOUND EFFECTS -->
-    <audio id="menu-navigation" src="./assets/audio/menu-navigation.wav" preload="auto"></audio>
-    <audio id="menu-selection" src="./assets/audio/menu-selection.mp3" preload="auto"></audio>
+    <audio
+      id="menu-navigation"
+      src="./assets/audio/menu-navigation.wav"
+      preload="auto"
+    ></audio>
+    <audio
+      id="menu-selection"
+      src="./assets/audio/menu-selection.mp3"
+      preload="auto"
+    ></audio>
 
     <!-- GAME SOUND EFFECTS -->
-    <audio id="lose-life" src="./assets/audio/lose-life.mp3" preload="auto"></audio>
-    <audio id="paddle-hit" src="./assets/audio/paddle-hit.mp3" preload="auto"></audio>
-    <audio id="brick-hit" src="./assets/audio/brick-hit.mp3" preload="auto"></audio>
+    <audio
+      id="lose-life"
+      src="./assets/audio/lose-life.mp3"
+      preload="auto"
+    ></audio>
+    <audio
+      id="paddle-hit"
+      src="./assets/audio/paddle-hit.mp3"
+      preload="auto"
+    ></audio>
+    <audio
+      id="brick-hit"
+      src="./assets/audio/brick-hit.mp3"
+      preload="auto"
+    ></audio>
     <!-- <audio id="steel-hit" src="steel-hit.mp3" preload="auto"></audio>
     <audio id="powerup-hit" src="powerup-hit.mp3" preload="auto"></audio>
     <audio id="powerup-recieved" src="powerup-recieved.mp3" preload="auto"></audio> -->
