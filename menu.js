@@ -1,4 +1,4 @@
-import { resetGame, insideStory } from "./game.js";
+import { resetGame } from "./game.js";
 import { menuNavigation, menuSelection } from "./audio.js";
 
 // MENU QUERYSELECTORS
@@ -7,8 +7,7 @@ const mainMenu = document.querySelector('.menu');
 const instructions = document.getElementById('instructions-menu');
 const leaderboard = document.getElementById('leaderboard-menu');
 const credit = document.getElementById('credit-menu');
-const finishGame = document.getElementById('finish-game');
-const loseGame = document.getElementById('lose-game');
+const gameOverElement = document.getElementById('game-over');
 
 export const menuState = {
   outsideMenu: false,
@@ -114,8 +113,7 @@ function returnToMain() {
   instructions.style.display = "none";
   leaderboard.style.display = "none";
   credit.style.display = "none";
-  loseGame.style.display = "none";
-  finishGame.style.display = "none";
+  gameOverElement.style.display = "none";
   menuState.outsideMain = false;
 }
 

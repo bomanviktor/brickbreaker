@@ -10,7 +10,10 @@
   </head>
   <body>
     <div class="game-wrapper">
-      <div class="menu">
+
+        <div class="menu-wrapper" id="menu-wrapper">
+
+      <div class="menu" id="menu">
         <h1>Brick-Breaker</h1>
         <button type="button" id="start-button" class="selected">
           Start Game
@@ -40,56 +43,36 @@
         <button id="return-credit">Return</button>
       </div>
 
-      <div class="menu-option" id="lose-game">
-        <h1>You lose!</h1>
-        <br />
-        <p id="lose-game-details">Sample text to test spacing.</p>
-        <br />
-        <form>
-          <label for="playerName">Name:</label><br />
-          <input
-            type="text"
-            id="playerNameLose"
-            name="playerName"
-            maxlength="10"
-            autofocus
-            autocomplete="off"
-          /><br />
-          <button type="submit" id="submit-lose">Submit</button>
-        </form>
-        <div id="leaderboard-lose"></div>
-      </div>
-
-      <div class="menu-option" id="finish-game">
-        <h1>You win!</h1>
-        <br />
+      <div class="menu-option" id="game-over">
         <p id="finish-game-details">Sample text to test spacing.</p>
         <br />
         <form>
           <label for="playerName">Name:</label><br />
           <input
             type="text"
-            id="playerNameWin"
+            id="playerNameSubmit"
             name="playerName"
             maxlength="10"
             autofocus
             autocomplete="off"
           /><br />
-          <button type="submit" id="submit-win">Submit</button>
+          <button type="submit" id="submit">Submit</button>
         </form>
         <div id="leaderboard-win"></div>
       </div>
 
+    </div>
+
       <div class="level-text"></div>
 
       <!-- scoreboard here -->
-      <div class="scoreboard">
+      <div class="scoreboard" id="scoreboard">
         <h2 id="level">LEVEL: 1</h2>
         <h2 id="lives">LIVES: 3</h2>
         <h2 id="score">SCORE: 0</h2>
         <h2 id="timer">TIME: 0</h2>
       </div>
-      <div class="game-area">
+      <div class="game-area" id="game-area">
         <div class="overlay">
           <p id="overlay-text">Space to start</p>
         </div>

@@ -55,7 +55,7 @@ body {
 
 /* CONTAINER FOR THE GAME AND MENU */
   .game-wrapper {
-    position: relative;
+    position: absolute;
     background: black;
     width: 1024px;
     height: 868px;
@@ -63,7 +63,7 @@ body {
   }
 
   /* MENU STYLES */
-.menu{
+.menu {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -90,11 +90,13 @@ body {
   color: white;
 }
 
-.menu-option #instructions-menu{display: none;}
-.menu-option #leaderboard-menu{display: none;}
-.menu-option #credit-menu{display: none;}
-.menu-option #lose-game{display: none;}
-.menu-option #finish-game{display: none;}
+#instructions-menu{display: none;}
+#leaderboard-menu{display: none;}
+#credit-menu{display: none;}
+#game-over{
+  display: none;
+  margin-left: 400px;
+}
 
 .level-text {
   position: absolute;
