@@ -1,5 +1,5 @@
 import { initiateLevel } from "./game.js";
-import { handleKeyDown } from "./menu.js"
+import { handleKeyPress } from "./menu.js"
 
 function main(){
     // Listen for the "start game" event
@@ -7,7 +7,7 @@ function main(){
         initiateLevel();
     });
     // Start the menu
-    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('keydown', handleKeyPress)
 }
 
 main();

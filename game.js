@@ -2,7 +2,7 @@ import { resetBricks, drawBricks, bricksArray, levels } from "./levelEditor.js";
 import { updateScoreboard, startTimer, timerId } from "./scoreboard.js";
 import { loseLife, brickHit, paddleHit } from "./audio.js";
 import { menuState } from "./menu.js";
-import { view, STATES } from "./view.js";
+import { view, VIEWSCREEN } from "./view.js";
 import { keyDownHandler, keyUpHandler, keyPressed, movePaddle } from "./controls.js";
 
 // GAME DEFINITION CONSTANTS
@@ -24,13 +24,13 @@ const overlayText = document.getElementById("overlay-text");
 export let Paddle = {
   Width: 100,
   Height: 30,
-  Speed: 4,
+  Speed: 5,
   X: (gameWidth - 100) / 2,
 }
 
 // BALL
 export let Ball = {
-  X: Paddle.X + Paddle.Width / 2,
+  X: (Paddle.X + Paddle.Width / 2) - 10,
   Y: gameHeight - Paddle.Height - brickHeight,
   Speed: 3,
   Direction: { x: 0, y: -1 }
@@ -43,6 +43,7 @@ export let gameState = {
   Over: false,
   Story: false,
   firstTime: true,
+  myLedgerBoard: false // contains the current ledgerboard
 }
 
 // PLAYER OBJECT
@@ -70,7 +71,7 @@ export function resetGame() {
 // UPDATES BALL POSITION
 function moveBall() {
   if (!gameState.Started) {
-    Object.assign(Ball, {X: Paddle.X + Paddle.Width / 2, Y: gameHeight - Paddle.Height - brickHeight});
+    Object.assign(Ball, {X: Paddle.X + Paddle.Width / 2 - 10, Y: gameHeight - Paddle.Height - brickHeight});
   }
   if (gameState.Started) {
     Ball.X += Ball.Direction.x * Ball.Speed;
@@ -181,7 +182,7 @@ function checkForWin() {
 }
 
 function gameLoop() {
-  if (!gameState.Paused) {
+  if (!gameState.Paused && !gameState.Over) {
     checkCollision();
     movePaddle();
     moveBall();
@@ -193,8 +194,7 @@ function gameLoop() {
 
 function finishGame(event) {
   let gameOverMsg;
-  document.querySelector(".scoreboard").style.display = "none";
-  document.querySelector(".game-area").style.display = "none";
+  view(VIEWSCREEN.GAME_OVER);
   switch(event){
     case 'end':
       gameOverMsg = player.time < 300 ? "You Win!" : "You Lose!";
@@ -203,43 +203,48 @@ function finishGame(event) {
       gameOverMsg = "You died! No more grit:lab :-(";
   }
   document.getElementById("finish-game-details").textContent = gameOverMsg;
-  view(STATES.GAME_OVER);
   menuState.outsideMenu = false;
+  // make POST request, sending data of player right now.
+  submitScore() 
 }
 
-// function submitScore(event) {
-//   event.preventDefault();
-//   const playerName = event.target.form.elements[0].value;
-//   player.name = playerName;
-//   const playerData = {
-//     name: playerName,
-//     level: player.level,
-//     points: player.points,
-//     time: player.time,
-//     lives: player.lives
-//   };
-//   console.log(JSON.stringify(playerData));
-//   fetch('http://localhost:5502/api/data', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify(playerData)
-//   })
-//     .then(response => response.json())
-//     .then(leaderboard => {
-//       const leaderboardDiv = player.win ? document.getElementById("leaderboard-win") : document.getElementById("leaderboard-lose");
-//       leaderboardDiv.innerHTML = "";
-//       leaderboard.forEach(entry => {
-//         const entryDiv = document.createElement("div");
-//         entryDiv.classList.add("leaderboard-entry");
-//         entryDiv.innerHTML = `<span class="rank">${entry.rank}</span><span class="name">${entry.name}</span><span class="score">${entry.score}</span><span class="time">${entry.time}</span>`;
-//         leaderboardDiv.appendChild(entryDiv);
-//       });
-//     })
-//     .catch(error => console.error('Error submitting player data:', error));
-//   player.win = false;
-// }
+function submitScore() {
+  const playerName = document.getElementById("playerNameSubmit").value;
+  player.name = playerName;
+  const playerData = {
+    name: playerName,
+    level: player.level,
+    points: player.points,
+    time: player.time,
+    lives: player.lives
+  };
+  // Ledgerboard data is returned on fetch POST request in this format
+  // [
+  //   {
+  //       "name": "playerName",
+  //       "rank": 1,
+  //       "score": 99,
+  //       "time": "00:10"
+  //   },
+  //   .......
+  // ]
+  fetch('http://localhost:5502/api/data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(playerData)
+  })
+    .then(response => response.json())
+    .then(leaderboard => {
+      leaderboard.forEach(entry => {
+        gameState.myLedgerBoard.push(entry)
+      });
+    })
+    .then(view(VIEWSCREEN.GAME_OVER))
+    .catch(error => console.error('Error submitting player data:', error));
+  player.win = false;
+}
 
 export function initiateLevel() {
   gameState.Story = true;

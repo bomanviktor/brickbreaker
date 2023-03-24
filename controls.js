@@ -1,5 +1,5 @@
 import { gameState, Ball, Paddle, levelText, overlay, pauseGame, resetGame, paddleElem, player } from "./game.js";
-import { STATES, view } from "./view.js";
+import { VIEWSCREEN, view } from "./view.js";
 import { startTimer } from "./scoreboard.js";
 
 // KEEPS TRACK OF KEY PRESSED
@@ -11,14 +11,14 @@ export let keyPressed = {
 
 // HANDLES ALL KEYDOWN PRESSES. ENABLES RESTART LEVEL IF GAME IS PAUSED.
 export function keyDownHandler(event) {
-    switch (event.key) {
-      case "ArrowLeft":
+    switch (event.key.toLowerCase()) {
+      case "arrowleft":
         keyPressed.Left = true;
         break;
-      case "ArrowRight":
+      case "arrowright":
         keyPressed.Right = true;
         break;
-      case "Shift":
+      case "shift":
         keyPressed.Shift = true;
         break;
       case " ":
@@ -49,10 +49,7 @@ export function keyDownHandler(event) {
         player.brickAmount = 0;
         break;
       case "m":
-        view(STATES.MENU);
-        break;
-      case "g":
-        view(STATES.PLAYING);
+        view(VIEWSCREEN.MENU);
         break;
     }
   }

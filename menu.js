@@ -1,5 +1,6 @@
-import { resetGame } from "./game.js";
+import { gameState, resetGame } from "./game.js";
 import { menuNavigation, menuSelection } from "./audio.js";
+import { VIEWSCREEN, view } from "./view.js";
 
 // MENU QUERYSELECTORS
 const menuItems = document.querySelectorAll('.menu button');
@@ -14,7 +15,7 @@ export const menuState = {
   outsideMain: false,
 }
 
-// This variable is for selectMenuItem & handleKeyDown to move through items
+// This variable is for selectMenuItem & handleKeyPress to move through items
 let selectedItemIndex = 0;
 function selectMenuItem(index = 0) {
   // Remove the 'selected' class from all menu items
@@ -27,22 +28,29 @@ function selectMenuItem(index = 0) {
   selectedItemIndex = index;
 }
 
-export function handleKeyDown(event) {
+export function handleKeyPress(event) {
   switch (event.key) {
     case 'ArrowUp':
       menuNavigation.play();
+      if (menuState.outsideMenu) break;
       if (selectedItemIndex > 0) {
         selectMenuItem(selectedItemIndex - 1);
       }
       break;
     case 'ArrowDown':
       menuNavigation.play();
+      if (menuState.outsideMenu) break;
       if (selectedItemIndex < menuItems.length - 1) {
         selectMenuItem(selectedItemIndex + 1);
       }
       break;
     case 'Enter':
       if (!menuState.outsideMenu) menuSelection.play();
+      if(gameState.Story) break;
+      if(gameState.Over) {
+        view(VIEWSCREEN.SCOREBOARD);
+        break;
+      }
       if (menuState.outsideMain) {
         returnToMain();
         break;
@@ -84,11 +92,11 @@ function instructionsHandler() {
   menuState.outsideMain = true;
 }
 
-function leaderboardHandler() {
+export function leaderboardHandler() {
   mainMenu.style.display = "none";
   leaderboard.style.display = "flex";
   menuState.outsideMain = true;
-
+  menuState.outsideMenu = false;
   fetch("http://localhost:5502/api/leaderboard")
     .then(response => response.json())
     .then(data => {
@@ -117,4 +125,4 @@ function returnToMain() {
   menuState.outsideMain = false;
 }
 
-document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keydown', handleKeyPress);

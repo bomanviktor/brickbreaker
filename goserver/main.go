@@ -30,12 +30,36 @@ var leaderboard = make([]leaderboardEntry, 0)
 var mu sync.Mutex
 
 func main() {
-	http.HandleFunc("/api/data", handleData)
-	http.HandleFunc("/api/leaderboard", handleLeaderboard)
+	http.HandleFunc("/api/data", handleData)               // POST
+	http.HandleFunc("/api/leaderboard", handleLeaderboard) // GET
 	fmt.Println("Server is running on port 5502 ... http://localhost:5502")
 	log.Fatal((http.ListenAndServe(":5502", nil)))
 }
 
+// POST method handler for /api/data
+//
+// expects incoming JSON data in the following format
+//
+//	{
+//	    "Name": "Fukame",
+//	    "Level": 5,
+//	    "Points": 99,
+//	    "Time": 10,
+//	    "Lives": 3
+//	}
+//
+// Responds with Array of JSON, response format:
+// [
+
+// 	{
+// 	    "name": "playerName",
+// 	    "rank": 1,
+// 	    "score": 99,
+// 	    "time": "00:10"
+// 	},
+// 	.......
+
+// ]
 func handleData(w http.ResponseWriter, r *http.Request) {
 	// Add CORS headers for preflight request
 	if r.Method == "OPTIONS" {
@@ -56,6 +80,7 @@ func handleData(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	fmt.Println("Request received: ", r.Method, r.URL.Path, r.RemoteAddr, r.UserAgent(), r.Header.Get("Content-Type"))
+	fmt.Println(r.Body)
 
 	decoder := json.NewDecoder(r.Body)
 	defer r.Body.Close()

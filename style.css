@@ -1,4 +1,6 @@
 /* GLOBAL CSS */
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
 body {
     background-color: grey;
     display: flex;
@@ -7,6 +9,8 @@ body {
     height: 100vh;
     margin: 0px;
     overflow: hidden;
+    font-family: 'Ubuntu', sans-serif;
+
   }
 
   button {
@@ -81,7 +85,7 @@ body {
   width: 220px;
 }
 
-.menu-option{
+.menu-option-style{
   display: none;
   flex-direction: column;
   justify-content: center;
